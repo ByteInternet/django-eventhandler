@@ -1,6 +1,6 @@
+from amqpconsumer.events import EventConsumer
 from django.conf import settings
 from django.core.management import BaseCommand
-from events.consumer import EventConsumer
 import logging
 from eventhandler import Dispatcher
 

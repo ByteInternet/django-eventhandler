@@ -1,4 +1,5 @@
 Django>=1.6
--e git+https://github.com/ByteInternet/python-events@20141024.1#egg=python-events
+amqpconsumer==1.0
 mock==1.3.0
 nose==1.3.7
+tox==2.3.1

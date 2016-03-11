@@ -10,6 +10,5 @@ setup(
     author='Gertjan Oude Lohuis',
     author_email='gertjan@byte.nl',
     description='RabbitMQ event handler as a Django module',
-    install_requires=['Django>=1.6', 'python-events==0.1'],
-    dependency_links=['https://github.com/ByteInternet/python-events/tarball/master#egg=python-events-0.1']
+    install_requires=['Django>=1.6', 'amqpconsumer==1.0'],
 )
