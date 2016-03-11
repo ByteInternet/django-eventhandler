@@ -1,19 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 import django
-from django.conf import settings
 from django.core.management import call_command
 
 
-settings.configure(
-    INSTALLED_APPS=('eventhandler',),
-    DATABASES=dict(
-        default=dict(
-            ENGINE='django.db.backends.sqlite3',
-        )
-    ),
-)
-
 if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+
     django.setup()
     call_command('test')

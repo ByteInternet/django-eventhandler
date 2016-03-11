@@ -4,7 +4,6 @@ from events.consumer import EventConsumer
 import logging
 from eventhandler import Dispatcher
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -14,10 +13,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         dispatcher = Dispatcher()
-        consumer = EventConsumer(settings.EVENT_QUEUE_URL, settings.EVENT_QUEUE_QUEUE,
+        consumer = EventConsumer(settings.LISTENER_URL,
+                                 settings.LISTENER_QUEUE,
                                  dispatcher.dispatch_event,
-                                 exchange=settings.EVENT_QUEUE_EXCHANGE,
-                                 exchange_type='topic',
-                                 routing_key='#')
+                                 exchange=settings.LISTENER_EXCHANGE,
+                                 exchange_type=settings.LISTENER_TOPIC,
+                                 routing_key=settings.LISTENER_ROUTING_KEY)
         logger.info("Starting to consume events")
         consumer.run()
