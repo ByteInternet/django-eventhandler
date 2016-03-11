@@ -1,14 +1,12 @@
-from collections import defaultdict
-import importlib
 import json
 import logging
-from django.conf import settings
+
+from collections import defaultdict
 from django.db import close_old_connections
 
 logger = logging.getLogger(__name__)
 
-EVENTS_MODULE_NAME = 'events'
-EVENTS_HANDLERS_NAME = 'HANDLERS'
+HANDLERS = defaultdict(list)
 
 
 class Dispatcher(object):
@@ -23,9 +21,8 @@ class Dispatcher(object):
     maps event names to a list of functions that take an event (dict)
     as first argument.
     """
-
     def __init__(self):
-        self.handlers = collect_handlers()
+        self.handlers = HANDLERS
 
         logger.debug("Registered the following event handlers:")
         for event, handlers in self.handlers.iteritems():
@@ -49,29 +46,8 @@ class Dispatcher(object):
                 logger.exception("Event handler raised an exception on event '%s'" % json.dumps(event))
 
 
-def collect_handlers():
-    """
-    Collect event handlers of all installed apps.
-    Ignore and skip misconfigured eventshandlers.
-    """
-
-    handlers = defaultdict(list)
-    for app in settings.INSTALLED_APPS:
-        try:
-            module = importlib.import_module('%s.%s' % (app, EVENTS_MODULE_NAME))
-        except ImportError:
-            continue
-
-        handlercoll = getattr(module, EVENTS_HANDLERS_NAME, {})
-        for event, hs in handlercoll.iteritems():
-            try:
-                _verify_handlers(event=event, handlers=hs)
-                handlers[event] += hs
-            except:
-                logger.exception("eventhandler '%s' will be skipped due misconfiguration" % event)
-    return handlers
-
-
-def _verify_handlers(event, handlers):
-    if not all(callable(method) for method in handlers):
-        raise ValueError('%s Does not contain callables' % event)
+def handles_event(event_type):
+    def wrap(f):
+        HANDLERS[event_type].append(f)
+        return f
+    return wrap

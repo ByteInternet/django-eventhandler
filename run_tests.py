@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import django
 from django.conf import settings
 from django.core.management import call_command
 
@@ -14,4 +15,5 @@ settings.configure(
 )
 
 if __name__ == "__main__":
-    call_command('test', 'eventhandler')
+    django.setup()
+    call_command('test')
