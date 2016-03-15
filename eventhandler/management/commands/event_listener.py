@@ -17,7 +17,7 @@ class Command(BaseCommand):
                                  settings.LISTENER_QUEUE,
                                  dispatcher.dispatch_event,
                                  exchange=settings.LISTENER_EXCHANGE,
-                                 exchange_type=settings.LISTENER_TOPIC,
+                                 exchange_type=settings.LISTENER_EXCHANGE_TYPE,
                                  routing_key=settings.LISTENER_ROUTING_KEY)
         logger.info("Starting to consume events")
         consumer.run()
