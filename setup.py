@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-eventhandler',
-    version='0.2',
+    version='0.3',
     packages=['eventhandler'],
     url='https://github.com/ByteInternet/django-eventhandler',
     author='Byte B.V.',

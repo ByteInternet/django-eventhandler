@@ -5,6 +5,7 @@ This is an event handler that handles messages from an AMQP server, installable 
 JSON-encoded dicts that have a key called 'type'. The eventhandler calls functions that have bound themselves to an
 event using a decorator.
 
+
 Installation and configuration
 ------------------------------
 Install the application in your Django project. Add `'eventhandler'` to your `INSTALLED_APPS` setting. Then, add the
@@ -21,10 +22,12 @@ Optionally, you can also specify these three settings, to have an exchange decla
   LISTENER_EXCHANGE_TYPE = 'topic'
   LISTENER_ROUTING_KEY = '#'
 
+
 Running the event handler
 -------------------------
 Manually: `python manage.py event_listener`. To daemonize it, you can use something like `supervisor` to manage the
 process.
+
 
 Usage
 -----
@@ -57,10 +60,12 @@ more than one handler for an event, or have one handler handle multiple events.
     def do_something_else(event):
         pass
 
+
 Running tests
 -------------
 Just run `python manage.py test` to run tests against your current setup. Run `tox` to run tests for various versions of
 Django. Currently, Django 1.6 through 1.9 on Python 2.7 are tested.
+
 
 =====
 About
@@ -70,5 +75,5 @@ fast and secure Magento hosting and scalable cluster hosting. Check out our `Git
 for more open source software.
 
 Check out our `Github page <https://github.com/ByteInternet>`_ for more open source software or `our site <https://www.byte.nl>`_
-to learn about our products and technologies. Look interesting? Reach out about joining the team <https://www.byte.nl/vacatures>`_.
+to learn about our products and technologies. Look interesting? Reach out about `joining the team <https://www.byte.nl/vacatures>`_.
 Or just drop by for a cup of excellent coffee if you're in town!
