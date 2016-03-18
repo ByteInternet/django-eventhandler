@@ -44,5 +44,4 @@ pep8.log
 # PyCharm
 .idea
 
-# dev settings
-control/settings/dev.py
+.tox
