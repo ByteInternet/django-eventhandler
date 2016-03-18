@@ -1,7 +1,9 @@
 ===================
 django-eventhandler
 ===================
-This is an event handler that handles messages from an AMQP server, installable as a Django application. You can bind
+This is an event handler that handles messages from an AMQP server, installable as a Django application. Events are
+JSON-encoded dicts that have a key called 'type'. The eventhandler calls functions that have bound themselves to an
+event using a decorator.
 
 Installation and configuration
 ------------------------------
@@ -26,7 +28,7 @@ process.
 
 Usage
 -----
-Events that are received from AMQP should be JSON messages. Each message should have a key named `type`, with a `str`
+Events that are received from AMQP should be JSON-encoded dicts. Each message should have a key named `type`, with `str`
 value. This value can be used in a decorator, to have the event handler execute a function when receiving an event.
 
 Example:
@@ -59,3 +61,13 @@ Running tests
 -------------
 Just run `python manage.py test` to run tests against your current setup. Run `tox` to run tests for various versions of
 Django. Currently, Django 1.6 through 1.9 on Python 2.7 are tested.
+
+=====
+About
+=====
+This software is brought to you by Byte, a webhosting provider based in Amsterdam, The Netherlands. We specialize in
+fast and secure Magento hosting and scalable cluster hosting. Check out our `Github page <https://github.com/ByteInternet>`_
+for more open source software.
+
+Check out `our site <https://www.byte.nl>`_ for more information or `job openings <https://www.byte.nl/vacatures>`_. Or
+just drop by for a cup of excellent coffee if you're near!
