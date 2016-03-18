@@ -21,5 +21,5 @@ setup(
     ],
     keywords='amqp django rabbitmq events eventhandler',
     description='RabbitMQ event handler as a Django module',
-    install_requires=['Django>=1.6', 'amqpconsumer==1.0'],
+    install_requires=['Django>=1.6', 'amqpconsumer==1.2'],
 )
