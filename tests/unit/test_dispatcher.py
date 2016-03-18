@@ -63,3 +63,15 @@ class TestDispatcher(TestCase):
         dispatcher.dispatch_event({'type': 'event_type'})
 
         before.assert_called_once_with()
+
+    def test_that_dispatcher_raises_error_if_event_has_no_type(self):
+        dispatcher = eventhandler.Dispatcher()
+
+        with self.assertRaises(RuntimeError):
+            dispatcher.dispatch_event({})
+
+    def test_that_dispatcher_does_not_raise_error_if_event_has_no_type_when_told_to(self):
+        dispatcher = eventhandler.Dispatcher(error_on_missing_type=False)
+        dispatcher.dispatch_event({})
+
+        self.assertEqual(len(self.handler.mock_calls), 0)

@@ -20,9 +20,10 @@ class Dispatcher(object):
     maps event names to a list of functions that take an event (dict)
     as first argument.
     """
-    def __init__(self, before_handler=None):
+    def __init__(self, before_handler=None, error_on_missing_type=True):
         self.handlers = HANDLERS
         self.before_handler = before_handler
+        self.error_on_missing_type = error_on_missing_type
 
         logger.debug("Registered the following event handlers:")
         for event, handlers in self.handlers.iteritems():
@@ -30,7 +31,15 @@ class Dispatcher(object):
             logger.debug("%s: %s", event, ', '.join(modules))
 
     def dispatch_event(self, event):
-        event_type = event.get('type')
+        try:
+            event_type = event['type']
+        except KeyError:
+            if self.error_on_missing_type:
+                raise RuntimeError('Event has no type: %s' % event)
+            else:
+                logging.error('Event has no type: %s' % event)
+            return
+
         logging.info("Got %s event", event_type)
 
         if callable(self.before_handler):
