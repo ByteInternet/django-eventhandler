@@ -2,7 +2,6 @@ import json
 import logging
 
 from collections import defaultdict
-from django.db import close_old_connections
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +20,9 @@ class Dispatcher(object):
     maps event names to a list of functions that take an event (dict)
     as first argument.
     """
-    def __init__(self):
+    def __init__(self, before_handler=None):
         self.handlers = HANDLERS
+        self.before_handler = before_handler
 
         logger.debug("Registered the following event handlers:")
         for event, handlers in self.handlers.iteritems():
@@ -32,15 +32,12 @@ class Dispatcher(object):
     def dispatch_event(self, event):
         event_type = event.get('type')
         logging.info("Got %s event", event_type)
-        handlers = self.handlers.get(event_type, [])
-        for handler in handlers:
+
+        if callable(self.before_handler):
+            self.before_handler()
+
+        for handler in self.handlers.get(event_type, []):
             try:
-                # Because the event_listener runs for a long time, after a while the db connection times out
-                # and for some reason. (this version of?) Django fails to automatically reconnect. so in order
-                # to force a living db connection each time an event handler is evaluated, we run
-                # db.close_old_connections which closes stale connections. django will then establish a new
-                # connection when a db call is made.
-                close_old_connections()
                 handler(event)
             except Exception:  # Catch'em all!
                 logger.exception("Event handler raised an exception on event '%s'" % json.dumps(event))

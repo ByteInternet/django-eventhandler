@@ -1,7 +1,10 @@
+import logging
+
 from amqpconsumer.events import EventConsumer
+from django.db import close_old_connections
 from django.conf import settings
 from django.core.management import BaseCommand
-import logging
+
 from eventhandler import Dispatcher
 
 logger = logging.getLogger(__name__)
@@ -12,7 +15,7 @@ class Command(BaseCommand):
            'correct event handler'
 
     def handle(self, *args, **options):
-        dispatcher = Dispatcher()
+        dispatcher = Dispatcher(before_handler=_before)
         consumer = EventConsumer(settings.LISTENER_URL,
                                  settings.LISTENER_QUEUE,
                                  dispatcher.dispatch_event,
@@ -21,3 +24,11 @@ class Command(BaseCommand):
                                  routing_key=settings.LISTENER_ROUTING_KEY)
         logger.info("Starting to consume events")
         consumer.run()
+
+
+def _before():
+    # Because the event_listener runs for a long time, after a while the db connection times out
+    # and for some reason, Django fails to automatically reconnect. so in order to force a living
+    # db connection each time an event handler is evaluated, we run db.close_old_connections which
+    # closes stale connections. Django will then establish a new connection when a db call is made.
+    close_old_connections()
