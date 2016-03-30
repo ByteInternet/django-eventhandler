@@ -15,10 +15,10 @@ class Dispatcher(object):
     on the type of event it sends it to all event handlers that are
     registered for the event.
 
-    To register an event handler, create a file called `events.py` in
-    your installed app and have it contain a dict called HANDLERS which
-    maps event names to a list of functions that take an event (dict)
-    as first argument.
+    To register an event handler, decorate a function with the
+    @handles_event decorator. Pass the type of event to the decorator
+    that you want to register the handler for.
+    The function (handler) should take an event (dict) as argument.
     """
     def __init__(self, before_handler=None, error_on_missing_type=True):
         self.handlers = HANDLERS
