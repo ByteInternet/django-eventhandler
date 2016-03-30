@@ -27,25 +27,27 @@ class Dispatcher(object):
 
         logger.debug("Registered the following event handlers:")
         for event, handlers in self.handlers.iteritems():
-            modules = set(map(lambda fn: fn.__module__, handlers))
+            modules = set(map(lambda fn: '%s.%s' % (fn.__module__, fn.__name__), handlers))
             logger.debug("%s: %s", event, ', '.join(modules))
 
     def dispatch_event(self, event):
+        logger.debug("Data: %s" % event)
+
         try:
             event_type = event['type']
+            logger.info("Got %s event", event_type)
         except KeyError:
             if self.error_on_missing_type:
                 raise RuntimeError('Event has no type: %s' % event)
             else:
-                logging.error('Event has no type: %s' % event)
+                logger.error('Event has no type: %s' % event)
             return
-
-        logging.info("Got %s event", event_type)
 
         if callable(self.before_handler):
             self.before_handler()
 
         for handler in self.handlers.get(event_type, []):
+            logger.debug('executing %s.%s for %s event' % (handler.__module__, handler.__name__, event_type))
             try:
                 handler(event)
             except Exception:  # Catch'em all!

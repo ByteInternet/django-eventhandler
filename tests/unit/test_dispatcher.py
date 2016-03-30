@@ -6,7 +6,7 @@ from django.test import TestCase
 class TestDispatcher(TestCase):
 
     def setUp(self):
-        self.handler = mock.Mock()
+        self.handler = mock.Mock(__name__='handler')
         eventhandler.HANDLERS = {'event_type': [self.handler]}
 
     def test_that_dispatcher_loads_event_defs_and_dispatches(self):
@@ -18,7 +18,7 @@ class TestDispatcher(TestCase):
         self.handler.assert_called_once_with(event)
 
     def test_that_dispatcher_dispatches_to_multiple_handlers(self):
-        other_handler = mock.Mock()
+        other_handler = mock.Mock(__name__='other_handler')
         eventhandler.HANDLERS = {'event_type': [self.handler, other_handler]}
 
         event = {'type': 'event_type', 'payload': 'some payload'}
@@ -29,7 +29,7 @@ class TestDispatcher(TestCase):
         other_handler.assert_called_once_with(event)
 
     def test_that_dispatcher_absorbs_all_exceptions(self):
-        handler = mock.Mock()
+        handler = mock.Mock(__name__='my_handler')
         handler.side_effect = RuntimeError
 
         eventhandler.HANDLERS = {'event_type': [handler, self.handler]}
