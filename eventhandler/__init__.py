@@ -2,7 +2,6 @@ import json
 import logging
 
 from collections import defaultdict
-from django.db import close_old_connections
 
 logger = logging.getLogger(__name__)
 
@@ -16,13 +15,15 @@ class Dispatcher(object):
     on the type of event it sends it to all event handlers that are
     registered for the event.
 
-    To register an event handler, create a file called `events.py` in
-    your installed app and have it contain a dict called HANDLERS which
-    maps event names to a list of functions that take an event (dict)
-    as first argument.
+    To register an event handler, decorate a function with the
+    @handles_event decorator. Pass the type of event to the decorator
+    that you want to register the handler for.
+    The function (handler) should take an event (dict) as argument.
     """
-    def __init__(self):
+    def __init__(self, before_handler=None, error_on_missing_type=True):
         self.handlers = HANDLERS
+        self.before_handler = before_handler
+        self.error_on_missing_type = error_on_missing_type
 
         logger.debug("Registered the following event handlers:")
         for event, handlers in self.handlers.iteritems():
@@ -30,17 +31,22 @@ class Dispatcher(object):
             logger.debug("%s: %s", event, ', '.join(modules))
 
     def dispatch_event(self, event):
-        event_type = event.get('type')
+        try:
+            event_type = event['type']
+        except KeyError:
+            if self.error_on_missing_type:
+                raise RuntimeError('Event has no type: %s' % event)
+            else:
+                logging.error('Event has no type: %s' % event)
+            return
+
         logging.info("Got %s event", event_type)
-        handlers = self.handlers.get(event_type, [])
-        for handler in handlers:
+
+        if callable(self.before_handler):
+            self.before_handler()
+
+        for handler in self.handlers.get(event_type, []):
             try:
-                # Because the event_listener runs for a long time, after a while the db connection times out
-                # and for some reason. (this version of?) Django fails to automatically reconnect. so in order
-                # to force a living db connection each time an event handler is evaluated, we run
-                # db.close_old_connections which closes stale connections. django will then establish a new
-                # connection when a db call is made.
-                close_old_connections()
                 handler(event)
             except Exception:  # Catch'em all!
                 logger.exception("Event handler raised an exception on event '%s'" % json.dumps(event))

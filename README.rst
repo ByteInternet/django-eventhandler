@@ -61,6 +61,19 @@ more than one handler for an event, or have one handler handle multiple events.
         pass
 
 
+**NB** Make sure that your handlers are in a place that's loaded/scanned on startup of Django,
+ otherwise the decorators won't register the handlers. For instance, for a Django-application,
+ `my_app/__init__.py` is scanned on startup (provided `my_app` is in `INSTALLED_APPS`). So if
+ your handlers are in `my_app/events.py`, you could load them from there:
+
+.. code-block:: python
+
+    # my_app/__init__.py:
+
+    # Load handlers for events, so django-eventhandlers picks 'em up
+    import my_app.events  # NOQA (keep pyflakes happy)
+
+
 Running tests
 -------------
 Just run `python manage.py test` to run tests against your current setup. Run `tox` to run tests for various versions of
