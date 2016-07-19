@@ -67,6 +67,21 @@ class TestDispatcher(TestCase):
 
         before.assert_called_once_with()
 
+    def test_that_before_handler_does_not_absorb_exceptions(self):
+        before = mock.Mock(side_effect=RuntimeError)
+
+        dispatcher = eventhandler.Dispatcher(before_handler=before)
+        self.assertRaises(RuntimeError, dispatcher.dispatch_event, {'type': 'event_type'})
+
+    def test_that_before_handler_absorbs_exceptions_when_told_to_do_so(self):
+        before = mock.Mock(side_effect=RuntimeError)
+
+        dispatcher = eventhandler.Dispatcher(before_handler=before, ignore_handler_exceptions=True)
+        dispatcher.dispatch_event({'type': 'event_type'})
+
+        before.assert_called_once_with()
+        self.assertTrue(True)  # Wouldn't be reached unless Error was caught
+
     def test_that_dispatcher_calls_before_handler_once_for_each_event(self):
         eventhandler.HANDLERS = {'event_type': [self.handler, self.handler]}
         before = mock.Mock()
