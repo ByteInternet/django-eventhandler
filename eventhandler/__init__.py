@@ -45,7 +45,14 @@ class Dispatcher(object):
             return
 
         if callable(self.before_handler):
-            self.before_handler()
+            if self.ignore_handler_exceptions:
+                try:
+                    self.before_handler()
+                except Exception:
+                    logger.exception("Before-handler raised an exception on event '%s'" % json.dumps(event))
+            else:
+                # separate call, so we do not mess up the stacktrace with try and except
+                self.before_handler()
 
         for handler in self.handlers.get(event_type, []):
             logger.debug('executing %s.%s for %s event' % (handler.__module__, handler.__name__, event_type))
