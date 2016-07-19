@@ -15,7 +15,7 @@ class Command(BaseCommand):
            'correct event handler'
 
     def handle(self, *args, **options):
-        dispatcher = Dispatcher(before_handler=_before, error_on_missing_type=False)
+        dispatcher = Dispatcher(before_handler=_before, error_on_missing_type=False, ignore_handler_exceptions=True)
         consumer = EventConsumer(settings.LISTENER_URL,
                                  settings.LISTENER_QUEUE,
                                  dispatcher.dispatch_event,

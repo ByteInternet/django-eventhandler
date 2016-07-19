@@ -20,10 +20,11 @@ class Dispatcher(object):
     that you want to register the handler for.
     The function (handler) should take an event (dict) as argument.
     """
-    def __init__(self, before_handler=None, error_on_missing_type=True):
+    def __init__(self, before_handler=None, error_on_missing_type=True, ignore_handler_exceptions=False):
         self.handlers = HANDLERS
         self.before_handler = before_handler
         self.error_on_missing_type = error_on_missing_type
+        self.ignore_handler_exceptions = ignore_handler_exceptions
 
         logger.debug("Registered the following event handlers:")
         for event, handlers in self.handlers.iteritems():
@@ -48,10 +49,15 @@ class Dispatcher(object):
 
         for handler in self.handlers.get(event_type, []):
             logger.debug('executing %s.%s for %s event' % (handler.__module__, handler.__name__, event_type))
-            try:
+
+            if self.ignore_handler_exceptions:
+                try:
+                    handler(event)
+                except Exception:  # Catch'em all!
+                    logger.exception("Event handler raised an exception on event '%s'" % json.dumps(event))
+            else:
+                # separate call, so we do not mess up the stacktrace with try and except
                 handler(event)
-            except Exception:  # Catch'em all!
-                logger.exception("Event handler raised an exception on event '%s'" % json.dumps(event))
 
 
 def handles_event(event_type):

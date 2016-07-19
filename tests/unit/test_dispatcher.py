@@ -28,7 +28,7 @@ class TestDispatcher(TestCase):
         self.handler.assert_called_once_with(event)
         other_handler.assert_called_once_with(event)
 
-    def test_that_dispatcher_absorbs_all_exceptions(self):
+    def test_that_dispatcher_does_not_absorb_handler_exceptions(self):
         handler = mock.Mock(__name__='my_handler')
         handler.side_effect = RuntimeError
 
@@ -36,6 +36,18 @@ class TestDispatcher(TestCase):
 
         event = {'type': 'event_type', 'payload': 'some payload'}
         dispatcher = eventhandler.Dispatcher()
+
+        with self.assertRaises(RuntimeError):
+            dispatcher.dispatch_event(event)
+
+    def test_that_dispatcher_absorbs_all_exceptions_when_told_to_do_so(self):
+        handler = mock.Mock(__name__='my_handler')
+        handler.side_effect = RuntimeError
+
+        eventhandler.HANDLERS = {'event_type': [handler, self.handler]}
+
+        event = {'type': 'event_type', 'payload': 'some payload'}
+        dispatcher = eventhandler.Dispatcher(ignore_handler_exceptions=True)
         dispatcher.dispatch_event(event)
 
         self.handler.assert_called_once_with(event)
