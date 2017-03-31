@@ -61,7 +61,8 @@ class Dispatcher(object):
                 try:
                     handler(event)
                 except Exception:  # Catch'em all!
-                    logger.exception("Event handler raised an exception on event '%s'" % json.dumps(event))
+                    logger.exception('Event handler raised an exception on {} event'.format(event['type']))
+                    logger.debug('Event data: {}'.format(json.dumps(event)))
             else:
                 # separate call, so we do not mess up the stacktrace with try and except
                 handler(event)
