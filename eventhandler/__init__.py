@@ -3,6 +3,8 @@ import logging
 
 from collections import defaultdict
 
+from copy import deepcopy
+
 logger = logging.getLogger(__name__)
 
 HANDLERS = defaultdict(list)
@@ -59,13 +61,13 @@ class Dispatcher(object):
 
             if self.ignore_handler_exceptions:
                 try:
-                    handler(event)
+                    handler(deepcopy(event))
                 except Exception:  # Catch'em all!
                     logger.exception('Event handler raised an exception on {} event'.format(event['type']))
                     logger.debug('Event data: {}'.format(json.dumps(event)))
             else:
                 # separate call, so we do not mess up the stacktrace with try and except
-                handler(event)
+                handler(deepcopy(event))
 
 
 def handles_event(event_type):

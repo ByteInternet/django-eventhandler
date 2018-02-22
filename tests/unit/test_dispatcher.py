@@ -102,3 +102,31 @@ class TestDispatcher(TestCase):
         dispatcher.dispatch_event({})
 
         self.assertEqual(len(self.handler.mock_calls), 0)
+
+    def test_that_handler_can_not_change_event_data_for_other_handlers(self):
+        def first_handler(event):
+            event['data'] = 'changed'
+
+        eventhandler.HANDLERS = {'event_type': [first_handler, self.handler]}
+
+        dispatcher = eventhandler.Dispatcher()
+
+        event_tochange = {'type': 'event_type', 'data': 'not_changed'}
+        dispatcher.dispatch_event(event_tochange)
+
+        expected_handler_argument = self.handler.mock_calls[0][1][0]
+        self.assertEqual(expected_handler_argument, {'type': 'event_type', 'data': 'not_changed'})
+
+    def test_that_handler_can_not_change_event_data_for_other_handlers_if_ignore_handler_exceptions(self):
+        def first_handler(event):
+            event['data'] = 'changed'
+
+        eventhandler.HANDLERS = {'event_type': [first_handler, self.handler]}
+
+        dispatcher = eventhandler.Dispatcher(ignore_handler_exceptions=True)
+
+        event_tochange = {'type': 'event_type', 'data': 'not_changed'}
+        dispatcher.dispatch_event(event_tochange)
+
+        expected_handler_argument = self.handler.mock_calls[0][1][0]
+        self.assertEqual(expected_handler_argument, {'type': 'event_type', 'data': 'not_changed'})
