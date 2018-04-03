@@ -1,6 +1,10 @@
 ===================
 django-eventhandler
 ===================
+
+.. image:: https://travis-ci.org/ByteInternet/django-eventhandler.svg?branch=master
+   :target: https://travis-ci.org/ByteInternet/django-eventhandler
+
 This is an event handler that handles messages from an AMQP server, installable as a Django application. Events are
 JSON-encoded dicts that have a key called 'type'. The eventhandler calls functions that have bound themselves to an
 event using a decorator.
@@ -76,8 +80,7 @@ more than one handler for an event, or have one handler handle multiple events.
 
 Running tests
 -------------
-Just run `python manage.py test` to run tests against your current setup. Run `tox` to run tests for various versions of
-Django. Currently, Django 1.6 through 1.9 on Python 2.7 are tested.
+Just run `python manage.py test` to run tests against your current setup.
 
 
 =====
