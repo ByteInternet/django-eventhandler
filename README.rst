@@ -1,6 +1,10 @@
 ===================
 django-eventhandler
 ===================
+
+.. image:: https://travis-ci.org/ByteInternet/django-eventhandler.svg?branch=master
+   :target: https://travis-ci.org/ByteInternet/django-eventhandler
+
 This is an event handler that handles messages from an AMQP server, installable as a Django application. Events are
 JSON-encoded dicts that have a key called 'type'. The eventhandler calls functions that have bound themselves to an
 event using a decorator.
