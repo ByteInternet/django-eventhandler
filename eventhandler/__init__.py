@@ -1,6 +1,6 @@
 import json
 import logging
-
+import six
 from collections import defaultdict
 
 from copy import deepcopy
@@ -29,7 +29,7 @@ class Dispatcher(object):
         self.ignore_handler_exceptions = ignore_handler_exceptions
 
         logger.debug("Registered the following event handlers:")
-        for event, handlers in self.handlers.iteritems():
+        for event, handlers in six.iteritems(self.handlers):
             modules = set(map(lambda fn: '%s.%s' % (fn.__module__, fn.__name__), handlers))
             logger.debug("%s: %s", event, ', '.join(modules))
 

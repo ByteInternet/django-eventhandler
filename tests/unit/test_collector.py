@@ -15,7 +15,7 @@ class TestEventsCollector(TestCase):
         def my_handler():
             pass
 
-        self.assertItemsEqual(Dispatcher().handlers['my_event'], [my_handler])
+        self.assertEqual(Dispatcher().handlers['my_event'], [my_handler])
 
     def test_decorator_collects_multiple_events(self):
         @handles_event('my_event')
@@ -23,8 +23,8 @@ class TestEventsCollector(TestCase):
         def my_handler():
             pass
 
-        self.assertItemsEqual(Dispatcher().handlers['my_event'], [my_handler])
-        self.assertItemsEqual(Dispatcher().handlers['my_other_event'], [my_handler])
+        self.assertEqual(Dispatcher().handlers['my_event'], [my_handler])
+        self.assertEqual(Dispatcher().handlers['my_other_event'], [my_handler])
 
     def test_decorator_collects_multiple_handlers_for_same_event(self):
         @handles_event('my_event')
