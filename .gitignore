@@ -43,5 +43,3 @@ pep8.log
 
 # PyCharm
 .idea
-
-.tox

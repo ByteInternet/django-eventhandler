@@ -76,8 +76,7 @@ more than one handler for an event, or have one handler handle multiple events.
 
 Running tests
 -------------
-Just run `python manage.py test` to run tests against your current setup. Run `tox` to run tests for various versions of
-Django. Currently, Django 1.6 through 1.9 on Python 2.7 are tested.
+Just run `python manage.py test` to run tests against your current setup.
 
 
 =====
