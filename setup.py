@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-eventhandler',
-    version='0.5.8',
+    version='0.5.9',
     packages=find_packages(exclude=['tests*']),
     url='https://github.com/ByteInternet/django-eventhandler',
     author='Byte B.V.',
@@ -23,5 +23,5 @@ setup(
     ],
     keywords='amqp django rabbitmq events eventhandler',
     description='RabbitMQ event handler as a Django module',
-    install_requires=['Django>=1.8', 'amqpconsumer==1.7.3', 'six>=1.11.0'],
+    install_requires=['Django>=1.8', 'amqpconsumer==1.7.4', 'six>=1.11.0'],
 )
